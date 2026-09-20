@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Bread";
+  src: url("./assets/fonts/bread.ttf") format("truetype");
+}
+
+@theme {
+  /* High-contrast brand colors */
+  --color-bread-dark: #4d2811; /* Deep pumpernickel / burnt crust for readable text */
+  --color-bread-light: #e4bc9b; /* Flour dust / soft interior crumb for clean backgrounds */
+
+  /* The core theme palette */
+  --color-toast-500: #e07a2f; /* Perfectly toasted orange-brown (Primary brand color) */
+  --color-dough-500: #f4d090; /* Soft unbaked pastry gold (Secondary cards/sub-headers) */
+  --color-butter-500: #fcd34d; /* Golden melted butter (Your gameshow highlight / gold coin hue) */
+
+  /* The "Ding Ding Ding!" Gameshow Accents */
+  --color-jam-500: #dc2626; /* Strawberry jam red (Perfect for primary action buttons, timers, errors) */
+  --color-neon-yeast: #22c55e; /* Rising dough green (For success states, scoring points, correct answers) */
+
+  --color-bread-dark-transparent: color-mix(
+    in srgb,
+    var(--color-bread-dark) 0%,
+    transparent
+  );
+
+  --font-bread: "Bread", sans-serif;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes spotlight-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+}
+
+.gameshow-bg {
+  position: relative;
+  background: linear-gradient(
+    120deg,
+    #fddca2 0%,
+    #fd9f5b 25%,
+    #f5c264 50%,
+    #ffbc8d 75%,
+    #f4d090 100%
+  );
+  background-size: 300% 300%;
+  animation: gradient-shift 24s ease-in-out infinite;
+}
+
+.gameshow-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, #ffb14c 0%, transparent 60%);
+  opacity: 0.6;
+  animation: spotlight-pulse 6s ease-in-out infinite;
+}
