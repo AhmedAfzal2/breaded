@@ -1,4 +1,4 @@
-# 🍞 Breaded - Question & Board Setup Guide
+# 🍞 Breaded Guide
 
 All game content is managed in a single file: `src/constants/questions.ts`. You can edit categories, write text questions, or use image URLs for both prompts and answers.
 
