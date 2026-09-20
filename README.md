@@ -1,75 +1,121 @@
-# React + TypeScript + Vite
+# 🍞 Breaded - Question & Board Setup Guide
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+All game content is managed in a single file: `src/constants/questions.ts`. You can edit categories, write text questions, or use image URLs for both prompts and answers.
 
-Currently, two official plugins are available:
+## 📐 Data Structure & Rules
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The game uses two main arrays in `src/constants/questions.ts`:
 
-## React Compiler
+- `CATEGORIES` (`string[][]`): Lists category names per board.
+- `QUESTIONS` (`Question[][][]`): Contains question data organized as Board → Category → Questions.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**IMPORTANT:**
 
-## Expanding the ESLint configuration
+1. **Board Count Parity:** The number of boards in `CATEGORIES` must strictly match the number of boards in `QUESTIONS`.
+2. **5 Questions Per Category:** Each category array must contain exactly 5 question objects, ordered from lowest points to highest points.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🖼️ Using Images in Questions or Answers
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+You can use both local image files and web image links for any `prompt` or `answer`.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 1. Local Images (Recommended)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Place your image files inside the `public/qImages/` folder (create the `qImages` folder inside `public` if it doesn't exist).
+2. Reference the path in your code starting with `/qImages/`:
 
+```typescript
+prompt: "/qImages/spider-man.jpg"
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Web Images
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Directly paste any direct web image URL:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
+```typescript
+answer: "https://example.com/images/godfather.jpg"
+```
+
+
+## 📝 Example Question Combinations
+
+You can mix and match text and images in any combination:
+
+```typescript
+export const QUESTIONS: Question[][][] = [
+  [ // ================= BOARD 1 =================
+    [ // Category 1: Movie Quotes
+      // 1. Text Prompt -> Text Answer
+      {
+        prompt: "With great power comes great responsibility",
+        answer: "Spider-Man (2002)",
       },
-      // other options...
-    },
-  },
-])
 
+      // 2. Local Image Prompt -> Text Answer
+      {
+        prompt: "/qImages/guess-this-character.jpg",
+        answer: "SpongeBob SquarePants",
+      },
+
+      // 3. Text Prompt -> Local Image Answer
+      {
+        prompt: "Identify the flag of Brazil",
+        answer: "/qImages/brazil-flag.png",
+      },
+
+      // 4. Local Image Prompt -> Web Image Answer
+      {
+        prompt: "/qImages/landmark-question.jpg",
+        answer: "https://example.com/eiffel-tower.jpg",
+      },
+
+      // 5. Text Prompt -> Text Answer
+      {
+        prompt: "You're like my own personal brand of heroin",
+        answer: "Twilight (2008)",
+      },
+    ],
+    // ... 4 more categories for Board 1
+  ],
+];
+```
+
+## ⌨️ Keyboard Shortcuts
+
+| Shortcut | Action |
+| --- | --- |
+| `[` | Go to the previous board |
+| `]` | Go to the next board |
+| Hover + `C` | Uncomplete a completed question |
+| Click | Open a question |
+| `Space` (question active) | Cycle from question → answer |
+| `T` (question text displayed) | Toggle the timer |
+
+## ➕ How to Add a New Board
+
+To add an extra board to the game:
+
+1. Add 5 category names to `CATEGORIES`:
+
+```typescript
+export const CATEGORIES: string[][] = [
+  ["Movie Quotes", "Corporate", "Palindromes", "Politics", "Afzal"], // Board 1
+  ["Empires", "Words in 'Inbreads'", "Before and After", "Doctor", "Complexity"], // Board 2
+  ["Geography", "Gaming", "80s Music", "Science", "Food"], // Board 3 (NEW)
+];
+```
+
+2. Add a matching 3rd array to `QUESTIONS`:
+
+```typescript
+export const QUESTIONS: Question[][][] = [
+  [ /* Board 1 Questions */ ],
+  [ /* Board 2 Questions */ ],
+  [ /* Board 3 Questions (NEW) */
+    [ /* 5 questions for Geography */ ],
+    [ /* 5 questions for Gaming */ ],
+    [ /* 5 questions for 80s Music */ ],
+    [ /* 5 questions for Science */ ],
+    [ /* 5 questions for Food */ ],
+  ],
+];
 ```
