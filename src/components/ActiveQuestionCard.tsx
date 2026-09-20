@@ -9,6 +9,12 @@ import PlusMinus from "./PlusMinus";
 import { QUESTIONS } from "../constants/questions";
 import Timer from "./Timer";
 
+const isImageUrl = (value: string): boolean => {
+  const urlPattern = /^(https?:\/\/|\/|data:image\/)/i;
+  const imageExtensionPattern = /\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i;
+  return urlPattern.test(value) || imageExtensionPattern.test(value);
+};
+
 interface ActiveQuestionCardProps {
   question: number[];
   isBoosted: boolean;
@@ -34,11 +40,13 @@ export function ActiveQuestionCard({
 
   let show: string = "";
   const q = QUESTIONS[currentBoard][qId[0]][qId[1]];
-  const isImg = "img" in q;
+
+  const isQuestionImg = isImageUrl(q.prompt);
+  const isAnswerImg = isImageUrl(q.answer);
+
   switch (showing) {
     case "question":
-      if (isImg) show = q.img!;
-      else show = q.text;
+      show = q.prompt;
       break;
     case "answer":
       show = q.answer;
@@ -122,17 +130,23 @@ export function ActiveQuestionCard({
               className="absolute inset-0 flex flex-col items-center w-full justify-center gap-2"
               key={showing}
               initial={
-                isImg && showing === "answer"
+                isQuestionImg && isAnswerImg && showing === "answer"
                   ? { opacity: 0 }
                   : { scale: 0, translateY: 20 }
               }
               animate={{ scale: 1, translateY: 0, opacity: 1 }}
               transition={{ type: "spring", damping: 13 }}
-              exit={isImg ? { opacity: 0 } : { translateY: -500 }}
+              exit={
+                isQuestionImg && isAnswerImg
+                  ? { opacity: 0 }
+                  : { translateY: -500 }
+              }
             >
-              {isImg && showing !== "wager" ? (
+              {(isQuestionImg && showing === "question") ||
+              (isAnswerImg && showing === "answer") ? (
                 <img
                   src={show}
+                  alt={show}
                   className="max-w-[50%] max-h-[80%] object-contain"
                 />
               ) : (
